@@ -9,9 +9,9 @@ export default createRouter({
       component: () => import("./views/Nothing.vue"),
     },
     {
-      path: "/test",
-      name: "test",
-      component: () => import("./views/Test.vue"),
+      path: "/generate-qr-code",
+      name: "generateQrCode",
+      component: () => import("./views/QrCode/Index.vue"),
     },
   ],
 });

@@ -8,15 +8,10 @@ export const Menus = [
         link: "nothing",
         icon: "",
       },
-      {
-        title: "子目录2",
-        link: "test",
-        icon: "",
-      },
     ],
   },
   {
-    title: "目录3",
-    link: "test",
+    title: "生成二维码",
+    link: "generateQrCode",
   },
 ];
