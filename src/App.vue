@@ -14,7 +14,7 @@ let menus = Menus;
 <template>
   <el-config-provider :size="size" :z-index="zIndex">
     <el-container style="height: 100%">
-      <el-aside :width="width">
+      <el-aside :width="width" style="margin-left: 1em">
         <el-scrollbar index="1">
           <div :collapse="isCollapseMenu" :router="true">
             <div v-for="(item, key) in menus" :key="key">
@@ -54,6 +54,7 @@ html,
 body,
 #app {
   height: 100%;
+  margin: 0;
 }
 
 .sidebar-group-title {

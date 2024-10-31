@@ -10,13 +10,6 @@ pub fn get_qr_code(
     error_correction_level: u8,
     image_format: &str,
 ) -> String {
-    println!(
-        "{},{}, {},{}",
-        text,
-        size.unwrap_or_default(),
-        error_correction_level,
-        image_format
-    );
     use base64::{engine::general_purpose, Engine as _};
     use image::Luma;
     use qrcode::QrCode;
