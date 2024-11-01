@@ -1,51 +1,44 @@
 <script setup lang="ts">
-import { ElConfigProvider } from "element-plus";
 import { ref, computed } from "vue";
 import { Menus } from "./menus";
 
 let isCollapseMenu = ref(false);
 let width = computed(() => (isCollapseMenu.value ? "50px" : "150px"));
-
-const size = "default";
-const zIndex = 3000;
 let menus = Menus;
 </script>
 
 <template>
-  <el-config-provider :size="size" :z-index="zIndex">
-    <el-container style="height: 100%">
-      <el-aside :width="width" style="margin-left: 1em">
-        <el-scrollbar index="1">
-          <div :collapse="isCollapseMenu" :router="true">
-            <div v-for="(item, key) in menus" :key="key">
-              <div v-if="item.subMenu">
-                <p class="sidebar-group-title">{{ item.title }}</p>
-                <router-link
-                  v-for="(sub, subKey) in item.subMenu"
-                  :key="subKey"
-                  :to="{ name: sub.link }"
-                  class="sub-link"
-                >
-                  {{ sub.title }}
-                </router-link>
-                <el-divider class="divider-horizontal" />
-              </div>
-              <div v-else>
-                <router-link :to="{ name: item.link }" class="link">
-                  {{ item.title }}
-                </router-link>
-                <el-divider class="divider-horizontal" />
-              </div>
+  <a-config-provider component-size="middle" :from="{ colon: true }">
+    <a-layout style="height: 100%">
+      <a-layout-sider :width="width" theme="light">
+        <div :collapse="isCollapseMenu" :router="true">
+          <div v-for="(item, key) in menus" :key="key">
+            <div v-if="item.subMenu">
+              <p class="sidebar-group-title">{{ item.title }}</p>
+              <router-link
+                v-for="(sub, subKey) in item.subMenu"
+                :key="subKey"
+                :to="{ name: sub.link }"
+                class="sub-link"
+              >
+                {{ sub.title }}
+              </router-link>
+              <a-divider class="divider-horizontal" />
+            </div>
+            <div v-else>
+              <router-link :to="{ name: item.link }" class="link">
+                {{ item.title }}
+              </router-link>
+              <a-divider class="divider-horizontal" />
             </div>
           </div>
-        </el-scrollbar>
-      </el-aside>
-      <el-divider direction="vertical" class="divider-vertical" />
-      <el-main>
+        </div>
+      </a-layout-sider>
+      <a-layout-content>
         <router-view />
-      </el-main>
-    </el-container>
-  </el-config-provider>
+      </a-layout-content>
+    </a-layout>
+  </a-config-provider>
 </template>
 
 <style scoped></style>

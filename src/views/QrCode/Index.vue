@@ -1,22 +1,29 @@
 <script setup lang="ts">
-import { reactive, ref, computed, onMounted } from "vue";
+import { reactive, ref, computed, onMounted, UnwrapRef } from "vue";
+import type { Rule } from "ant-design-vue/es/form";
 import { invoke } from "@tauri-apps/api/core";
-import { FormRules, FormInstance } from "element-plus";
 import { writeText, writeImage } from "@tauri-apps/plugin-clipboard-manager";
-import notify from "../../utils/notification";
+import { message } from "ant-design-vue";
 
-const formRef = ref<FormInstance>();
-const rules = reactive<FormRules>({
+const formRef = ref();
+const rules: Record<string, Rule[]> = {
   qrCodeText: [
     {
       required: true,
       message: "二维码内容不能为空",
-      trigger: "blur",
+      trigger: ["blur", "change"],
     },
   ],
-});
+};
 
-const form = reactive({
+interface FormState {
+  qrCodeText: string;
+  imageFormat: string;
+  size: number | null;
+  errorCorrection: number;
+}
+
+const form: UnwrapRef<FormState> = reactive({
   qrCodeText: "",
   imageFormat: "png",
   size: null,
@@ -24,8 +31,8 @@ const form = reactive({
 });
 const addDataUrlScheme = ref<Boolean>(false);
 const boardRadius = {
-  borderRadius: "var(--el-border-radius-large)",
-  boxShadow: "var(--el-box-shadow-lighter)",
+  borderRadius: "var(--a-border-radius-large)",
+  boxShadow: "var(--a-box-shadow-lighter)",
 };
 
 /**
@@ -83,7 +90,7 @@ function reset() {
 async function writeBase64ToClipboard() {
   if (!qrCodeBase64.value) return;
   await writeText(qrCodeBase64.value as string);
-  notify("提示", "复制二维码Base64字符串成功！");
+  message.success("已复制二维码Base64字符串");
 }
 
 /**
@@ -98,110 +105,106 @@ async function writeImageToClipboard() {
     binaryArray[i] = binaryString.charCodeAt(i);
   }
   await writeImage(binaryArray);
-  notify("提示", "复制二维码图片成功！");
+  message.success("已复制二维码图片");
 }
 
 onMounted(() => setDefaultFormData());
 
-async function generateQrCode(formEl: FormInstance | undefined) {
-  if (!formEl) return;
-  await formEl.validate(async (valid) => {
-    if (valid) {
-      invoke("get_qr_code", {
-        text: form.qrCodeText,
-        size: form.size,
-        errorCorrectionLevel: form.errorCorrection,
-        imageFormat: form.imageFormat,
-      })
-        .then((res) => (qrCodeInfo.value = res))
-        .catch((err) => console.log(err));
-    }
+async function generateQrCode() {
+  await formRef.value.validate().then(() => {
+    invoke("get_qr_code", {
+      text: form.qrCodeText,
+      size: form.size,
+      errorCorrectionLevel: form.errorCorrection,
+      imageFormat: form.imageFormat,
+    })
+      .then((res) => (qrCodeInfo.value = res))
+      .catch((err) => console.log(err));
   });
 }
 </script>
 <template>
-  <div class="action">
-    <el-checkbox
-      v-model="addDataUrlScheme"
-      style="width: 11.5em"
+  <a-space class="action">
+    <a-checkbox
+      v-model:checked="addDataUrlScheme"
+      style="width: 11rem"
       :disabled="!qrCodeInfo"
-      >添加Data URI Scheme</el-checkbox
+      >添加Data URI Scheme</a-checkbox
     >
-    <el-button
+    <a-button
       type="primary"
       :disabled="!qrCodeInfo"
       @click="writeBase64ToClipboard"
-      >复制二维码Base64字符串</el-button
+      >复制二维码Base64字符串</a-button
     >
-    <el-button
+    <a-button
       type="primary"
       class="button"
       :disabled="!qrCodeInfo"
       @click="writeImageToClipboard"
-      >复制二维码</el-button
+      style="width: 6rem"
+      >复制二维码</a-button
     >
-    <el-button type="danger" class="button" @click="reset">重置</el-button>
-    <el-button type="primary" @click="generateQrCode(formRef)" class="button"
-      >生成</el-button
+    <a-button danger class="button" @click="reset">重置</a-button>
+    <a-button type="primary" @click="generateQrCode()" class="button"
+      >生成</a-button
     >
-  </div>
+  </a-space>
   <div class="content">
-    <div class="content-item" :style="boardRadius">
-      <el-scrollbar>
-        <el-form
-          :model="form"
-          label-position="top"
-          label-width="auto"
-          :rules="rules"
-          ref="formRef"
-        >
-          <el-form-item label="二维码内容" prop="qrCodeText">
-            <el-input
-              v-model="form.qrCodeText"
-              type="textarea"
-              placeholder="请输入二维码内容(url或文本信息)"
-              @change="clearQrCode"
-            />
-          </el-form-item>
-          <el-form-item label="文件格式" prop="fileType" @change="clearQrCode">
-            <el-radio-group v-model="form.imageFormat">
-              <el-radio value="png">PNG</el-radio>
-              <el-radio value="jpeg">JPEG</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item
-            label="纠错率"
-            prop="errorCorrection"
+    <a-card class="content-item" :style="boardRadius">
+      <a-form
+        :model="form"
+        label-position="top"
+        label-width="auto"
+        :rules="rules"
+        ref="formRef"
+      >
+        <a-form-item label="二维码内容" name="qrCodeText">
+          <a-textarea
+            v-model:value="form.qrCodeText"
+            placeholder="请输入二维码内容(url或文本信息)"
             @change="clearQrCode"
-          >
-            <el-radio-group v-model="form.errorCorrection">
-              <el-radio :value="0">7%</el-radio>
-              <el-radio :value="1">15%</el-radio>
-              <el-radio :value="2">25%</el-radio>
-              <el-radio :value="3">30%</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item label="二维码大小" prop="size" @change="clearQrCode">
-            <el-input-number v-model="form.size" :min="1" :max="40" />
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
-    </div>
-    <div class="content-item" :style="boardRadius">
+          />
+        </a-form-item>
+        <a-form-item label="文件格式" name="fileType" @change="clearQrCode">
+          <a-radio-group v-model:value="form.imageFormat">
+            <a-radio value="png">PNG</a-radio>
+            <a-radio value="jpeg">JPEG</a-radio>
+          </a-radio-group>
+        </a-form-item>
+
+        <a-form-item
+          label="纠错率"
+          name="errorCorrection"
+          @change="clearQrCode"
+        >
+          <a-radio-group v-model:value="form.errorCorrection">
+            <a-radio :value="0">7%</a-radio>
+            <a-radio :value="1">15%</a-radio>
+            <a-radio :value="2">25%</a-radio>
+            <a-radio :value="3">30%</a-radio>
+          </a-radio-group>
+        </a-form-item>
+        <a-form-item label="二维码大小" name="size" @change="clearQrCode">
+          <a-input-number v-model:value="form.size" :min="1" :max="40" />
+        </a-form-item>
+      </a-form>
+    </a-card>
+    <a-card class="content-item" :style="boardRadius">
       <div class="qr-code">
-        <el-image
+        <a-image
           :src="qrCodeSrc()"
-          fit="fill"
+          :alt="form.qrCodeText"
+          :width="'100%'"
           v-if="qrCodeInfo"
           style="height: 100%; width: 100%"
         />
-        <el-empty
+        <a-empty
           v-else
           description="请输入二维码信息后，点击【生成】按钮生成二维码！"
         />
       </div>
-    </div>
+    </a-card>
   </div>
 </template>
 <style lang="less">
@@ -209,7 +212,7 @@ async function generateQrCode(formEl: FormInstance | undefined) {
   display: flex;
   justify-content: right;
   height: 40px;
-  margin: 0;
+  margin: 6px;
   padding: 0;
 
   .button {

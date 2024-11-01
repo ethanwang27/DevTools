@@ -4,7 +4,7 @@ import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import Icons from "unplugin-icons/vite";
 import IconsResolver from "unplugin-icons/resolver";
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import { AntDesignVueResolver } from "unplugin-vue-components/resolvers";
 
 // @ts-expect-error process is a nodejs global
 const host = process.env.TAURI_DEV_HOST;
@@ -15,7 +15,9 @@ export default defineConfig(async () => ({
     vue(),
     AutoImport({
       resolvers: [
-        ElementPlusResolver(),
+        AntDesignVueResolver({
+          importStyle: false,
+        }),
         // 自动导入图标组件
         IconsResolver({
           prefix: "Icon",
@@ -24,7 +26,11 @@ export default defineConfig(async () => ({
     }),
     Components({
       resolvers: [
-        ElementPlusResolver(),
+        AntDesignVueResolver({
+          resolveIcons: true,
+          cjs: true,
+          importStyle: false,
+        }),
         //自动注册图标组件
         IconsResolver({
           enabledCollections: ["ep"],
