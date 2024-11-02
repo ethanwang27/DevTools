@@ -98,6 +98,7 @@ async function writeBase64ToClipboard() {
  */
 async function writeImageToClipboard() {
   if (!qrCodeBase64.value) return;
+  // 参考链接：https://stackoverflow.com/questions/76679845/save-canvas-data-as-png-or-jpg-in-tauri-using-fs-module
   const binaryString = atob(qrCodeBase64.value as string);
   const length = binaryString.length;
   const binaryArray = new Uint8Array(length);

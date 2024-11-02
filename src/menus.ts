@@ -1,17 +1,42 @@
-export const Menus = [
+import { MenuProps } from "ant-design-vue";
+import { menuProps } from "ant-design-vue/es/menu/src/Menu";
+// export const Menus = [
+//   {
+//     title: "目录1",
+//     icon: "",
+//     subMenu: [
+//       {
+//         title: "子目录1",
+//         link: "nothing",
+//         icon: "",
+//       },
+//     ],
+//   },
+//   {
+//     title: "生成二维码",
+//     link: "generateQrCode",
+//   },
+// ];
+
+export const Menus: MenuProps["items"] = [
   {
-    title: "目录1",
-    icon: "",
-    subMenu: [
+    type: "group",
+    label: "条形码/二维码",
+    children: [
       {
-        title: "子目录1",
-        link: "nothing",
-        icon: "",
+        label: "二维码生成",
+        key: "generateQrCode",
       },
     ],
   },
   {
-    title: "生成二维码",
-    link: "generateQrCode",
+    type: "group",
+    label: "数据生成",
+    children: [
+      {
+        label: "身份证号码生成",
+        key: "fakeIdNo",
+      },
+    ],
   },
 ];

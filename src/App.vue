@@ -1,38 +1,32 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { Menus } from "./menus";
+import router from "./router";
 
 let isCollapseMenu = ref(false);
-let width = computed(() => (isCollapseMenu.value ? "50px" : "150px"));
-let menus = Menus;
+let width = computed(() => (isCollapseMenu.value ? "50px" : "200px"));
+const defaultPage = "/nothing";
+const currentMenu = ref<string[]>([defaultPage]);
+
+function onMenuClick({ key }) {
+  const routes = router.getRoutes();
+  const path = routes.find((item) => item.name === key) ?? defaultPage;
+  router.push(path);
+}
+
+onMounted(() => router.push(defaultPage));
 </script>
 
 <template>
   <a-config-provider component-size="middle" :from="{ colon: true }">
     <a-layout style="height: 100%">
-      <a-layout-sider :width="width" theme="light">
-        <div :collapse="isCollapseMenu" :router="true">
-          <div v-for="(item, key) in menus" :key="key">
-            <div v-if="item.subMenu">
-              <p class="sidebar-group-title">{{ item.title }}</p>
-              <router-link
-                v-for="(sub, subKey) in item.subMenu"
-                :key="subKey"
-                :to="{ name: sub.link }"
-                class="sub-link"
-              >
-                {{ sub.title }}
-              </router-link>
-              <a-divider class="divider-horizontal" />
-            </div>
-            <div v-else>
-              <router-link :to="{ name: item.link }" class="link">
-                {{ item.title }}
-              </router-link>
-              <a-divider class="divider-horizontal" />
-            </div>
-          </div>
-        </div>
+      <a-layout-sider :width="width" theme="light" class="sidebar">
+        <a-menu
+          :items="Menus"
+          mode="vertical"
+          v-model:selectedKeys="currentMenu"
+          @click="onMenuClick"
+        />
       </a-layout-sider>
       <a-layout-content>
         <router-view />
@@ -50,14 +44,19 @@ body,
   margin: 0;
 }
 
-.sidebar-group-title {
+.sidebar {
+  padding-left: 1rem;
+}
+
+.menu-group {
   font-size: 1rem;
   font-weight: 700;
   margin-bottom: 8px;
   line-height: 24px;
 }
 
-.line-base {
+// 目录中间的分割线基础样式
+.menu-base {
   line-height: 1.5;
   font-size: 0.9rem;
   border-radius: 8px;
@@ -65,32 +64,29 @@ body,
   color: black;
   text-decoration: none;
 }
-.link {
-  .line-base;
-  padding: 0, 16px;
+
+.menu {
+  .menu-base;
+  margin: 10px, 16px;
   line-height: 3;
+  height: 100%;
 }
-.sub-link {
+.sub-menu {
   padding: 10px 16px;
   display: block;
-  .line-base;
+  .menu-base;
 }
-
-.link-select {
+.menu-select {
   color: #409eff;
   background-color: rgba(64, 158, 255, 0.1);
   text-decoration: underline;
 }
-:is(.link, .sub-link):hover {
-  .link-select;
+:is(.menu, .sub-menu):hover {
+  .menu-select;
 }
 
-:is(.link, .sub-link):active {
-  .link-select;
-}
-
-.router-link-active {
-  .link-select;
+:is(.menu, .sub-menu):active {
+  .menu-select;
 }
 
 .divider-base {
