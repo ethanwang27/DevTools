@@ -2,6 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { Menus } from "./menus";
 import router from "./router";
+import { theme } from "ant-design-vue";
 
 let isCollapseMenu = ref(false);
 let width = computed(() => (isCollapseMenu.value ? "50px" : "200px"));
@@ -14,15 +15,36 @@ function onMenuClick(menu: IMenuClick) {
   const routes = router.getRoutes();
   const path =
     routes.find((item) => item.name === menu.key)?.path ?? defaultPage;
-  // log(`路由跳转：${path}`, "debug");
   router.push(path);
 }
 
-onMounted(() => router.push(defaultPage));
+const themeAlgorithm = ref(theme.defaultAlgorithm);
+
+function changeTheme(isDark: boolean) {
+  if (isDark) {
+    themeAlgorithm.value = theme.darkAlgorithm;
+  } else {
+    themeAlgorithm.value = theme.defaultAlgorithm;
+  }
+}
+
+const colorSchema = window.matchMedia("(prefers-color-scheme: dark)");
+colorSchema.addEventListener("change", (event) => {
+  changeTheme(event.matches);
+});
+
+onMounted(() => {
+  changeTheme(colorSchema.matches);
+  router.push(defaultPage);
+});
 </script>
 
 <template>
-  <a-config-provider component-size="middle" :from="{ colon: true }">
+  <a-config-provider
+    component-size="middle"
+    :from="{ colon: true }"
+    :theme="{ algorithm: themeAlgorithm }"
+  >
     <a-layout style="height: 100%">
       <a-layout-sider :width="width" theme="light" class="sidebar">
         <a-menu
