@@ -1,15 +1,16 @@
+<!-- 渲染markdown -->
 <script lang="ts" setup>
 import markdownit from "markdown-it";
 import hljs from "highlight.js";
 import "github-markdown-css";
 import "highlight.js/styles/github.css";
-
 import { defineProps, computed } from "vue";
+import MarkdownIt from "markdown-it";
 
 const props = defineProps({
   text: { type: String, required: true },
 });
-const md = markdownit({
+const md: MarkdownIt = markdownit({
   html: true,
   linkify: true,
   typographer: true,

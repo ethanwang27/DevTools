@@ -8,9 +8,12 @@ let width = computed(() => (isCollapseMenu.value ? "50px" : "200px"));
 const defaultPage = "/nothing";
 const currentMenu = ref<string[]>([defaultPage]);
 
-function onMenuClick({ key }) {
+type IMenuClick = { key: string };
+
+function onMenuClick(menu: IMenuClick) {
   const routes = router.getRoutes();
-  const path = routes.find((item) => item.name === key)?.path ?? defaultPage;
+  const path =
+    routes.find((item) => item.name === menu.key)?.path ?? defaultPage;
   // log(`路由跳转：${path}`, "debug");
   router.push(path);
 }
