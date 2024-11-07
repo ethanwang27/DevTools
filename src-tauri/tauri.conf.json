@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "开发工具箱",
+        "title": "DevTools",
         "width": 1000,
         "height": 600
       }

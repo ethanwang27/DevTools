@@ -3,6 +3,25 @@
 version = 3
 
 [[package]]
+name = "DevTools"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "image",
+ "log",
+ "qrcode",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-clipboard-manager",
+ "tauri-plugin-dialog",
+ "tauri-plugin-log",
+ "tauri-plugin-notification",
+ "tauri-plugin-shell",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1037,25 +1056,6 @@ dependencies = [
  "quote",
  "rustc_version",
  "syn 2.0.85",
-]
-
-[[package]]
-name = "devtools"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "image",
- "log",
- "qrcode",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-clipboard-manager",
- "tauri-plugin-dialog",
- "tauri-plugin-log",
- "tauri-plugin-notification",
- "tauri-plugin-shell",
 ]
 
 [[package]]

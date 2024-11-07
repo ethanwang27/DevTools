@@ -28,6 +28,7 @@ declare module 'vue' {
     ASpace: typeof import('ant-design-vue/lib')['Space']
     ASubMenu: typeof import('ant-design-vue/lib')['SubMenu']
     ATextarea: typeof import('ant-design-vue/lib')['Textarea']
+    MarkDownRender: typeof import('./src/components/MarkDownRender.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

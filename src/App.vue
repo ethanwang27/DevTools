@@ -10,7 +10,8 @@ const currentMenu = ref<string[]>([defaultPage]);
 
 function onMenuClick({ key }) {
   const routes = router.getRoutes();
-  const path = routes.find((item) => item.name === key) ?? defaultPage;
+  const path = routes.find((item) => item.name === key)?.path ?? defaultPage;
+  // log(`路由跳转：${path}`, "debug");
   router.push(path);
 }
 
