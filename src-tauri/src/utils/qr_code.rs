@@ -1,3 +1,5 @@
+#[allow(dead_code, unused_variables)]
+
 /// 获取二维码
 /// text: 二维码内容信息；
 /// size: 二维码大小；
