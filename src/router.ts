@@ -13,5 +13,15 @@ export default createRouter({
       name: "generateQrCode",
       component: () => import("./views/QrCode/Index.vue"),
     },
+    {
+      path: '/Unicode',
+      name: 'unicode',
+      component: () => import('./views/Unicode/index.vue')
+    },
+    {
+      path: "/test-markdown-render",
+      name: "testMarkDown",
+      component: () => import("./views/TestMarkdown.vue"),
+    },
   ],
 });

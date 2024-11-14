@@ -39,4 +39,24 @@ export const Menus: MenuProps["items"] = [
       },
     ],
   },
+  {
+    type: "group",
+    label: "开发工具",
+    children: [
+      {
+        label: "Unicode编码转换",
+        key: "unicode",
+      },
+    ],
+  },
+  {
+    type: "group",
+    label: "测试",
+    children: [
+      {
+        label: "Markdown渲染测试",
+        key: "testMarkDown",
+      },
+    ],
+  },
 ];
