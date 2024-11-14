@@ -2,6 +2,7 @@
 import { ref, computed } from "vue";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { message } from "ant-design-vue";
+import TButton from "../../components/base/TButton.vue";
 
 type TextareaStatus = "warn" | "error" | undefined;
 const inputStr = ref<string>("");
@@ -29,7 +30,7 @@ function convert(str: string, convertFunc: () => string): void {
 
 function decodeUnicode(unicodeStr: string): string {
   console.log("unicode str", unicodeStr);
-  let reg = /(\d|[a-f]){4}/gi;
+  let reg = /(\d|[a-f]){1,4}/gi;
   let result = unicodeStr
     .match(reg)
     ?.map((char) => {
@@ -91,48 +92,37 @@ const copyDisable = computed(() => !convertResult.value);
       placeholder="请输入unicode字符串或汉字"
       v-model:value="inputStr"
       :status="convertTextareaStatus"
-      class="textarea"
+      class="full-textarea"
       style="height: 100%"
       @change="() => (convertResult = '')"
     />
   </div>
-  <div class="center-button">
-    <a-button
-      @click="convertUnicodeToChinese"
-      class="button"
-      type="primary"
-      ghost
-      >Unicode转汉字</a-button
+  <div class="action">
+    <t-button @click="convertUnicodeToChinese" type="primary"
+      >Unicode转汉字</t-button
     >
-    <a-button
-      @click="convertChineseToUnicode"
-      class="button"
-      type="primary"
-      ghost
-      >汉字转换Unicode</a-button
+    <t-button @click="convertChineseToUnicode" type="primary"
+      >汉字转换Unicode</t-button
     >
-    <a-button
-      @click="copyResult"
-      class="button"
-      type="primary"
-      ghost
-      :disabled="copyDisable"
-      >复制结果</a-button
+    <t-button @click="copyResult" type="primary" :disabled="copyDisable"
+      >复制结果</t-button
     >
-    <a-button @click="clear" class="button" type="primary" ghost danger
-      >清空</a-button
+    <t-button @click="clear" type="primary" danger :disabled="copyDisable"
+      >清空</t-button
     >
   </div>
   <div class="bottom-input">
     <a-textarea
       placeholder="转换结果"
       v-model:value="convertResult"
-      class="textarea"
+      class="full-textarea"
       readOnly
     />
   </div>
 </template>
 <style lang="less">
+@import url("/src/style/base/button.less");
+@import url("/src/style/common.less");
 @input-height: calc((100% - 46px) / 2);
 @input-margin: 0px 5px 0px 0px;
 
@@ -141,21 +131,8 @@ const copyDisable = computed(() => !convertResult.value);
   margin: @input-margin;
 }
 
-.center-button {
-  display: flex;
-  justify-content: right;
-  height: 40px;
-  .button {
-    margin: 3px 5px;
-  }
-}
-
 .bottom-input {
   height: @input-height;
   margin: @input-margin;
-}
-.textarea {
-  height: 100% !important;
-  resize: none;
 }
 </style>

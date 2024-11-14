@@ -37,6 +37,13 @@ const mdContent = computed(() => {
 });
 </script>
 <template>
-  <div v-html="mdContent" class="markdown-body"></div>
+  <div v-html="mdContent" class="markdown-body markdown-render-content"></div>
 </template>
-<style lang="less"></style>
+<style lang="less">
+.markdown-render-content {
+  margin: 3px 10px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+</style>
