@@ -203,7 +203,7 @@ async function generateQrCode() {
     </a-card>
   </div>
 </template>
-<style lang="less">
+<style lang="less" scoped>
 @import url("/src/style/common.less");
 
 .content {

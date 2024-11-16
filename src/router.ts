@@ -14,14 +14,14 @@ export default createRouter({
       component: () => import("./views/QrCode/Index.vue"),
     },
     {
-      path: '/Unicode',
-      name: 'unicode',
-      component: () => import('./views/Unicode/index.vue')
+      path: "/Unicode",
+      name: "unicode",
+      component: () => import("./views/Unicode/Index.vue"),
     },
     {
-      path: "/test-markdown-render",
-      name: "testMarkDown",
-      component: () => import("./views/TestMarkdown.vue"),
+      path: "/preview-markdown",
+      name: "previewMarkdown",
+      component: () => import("./views/Markdown/PreviewMarkdown.vue"),
     },
   ],
 });

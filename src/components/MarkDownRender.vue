@@ -37,13 +37,20 @@ const mdContent = computed(() => {
 });
 </script>
 <template>
-  <div v-html="mdContent" class="markdown-body markdown-render-content"></div>
+  <a-card class="markdown-card ant-card-body">
+    <div v-html="mdContent" class="markdown-body markdown-render-content"></div>
+  </a-card>
 </template>
-<style lang="less">
+<style lang="less" scoped>
+.markdown-card {
+  padding: 3px 3px;
+  margin: 0;
+}
 .markdown-render-content {
-  margin: 3px 10px;
   width: 100%;
   height: 100%;
   overflow: auto;
+  padding: 0;
+  margin: 0;
 }
 </style>

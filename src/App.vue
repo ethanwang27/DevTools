@@ -6,8 +6,16 @@ import { theme } from "ant-design-vue";
 
 let isCollapseMenu = ref(false);
 let width = computed(() => (isCollapseMenu.value ? "50px" : "200px"));
+/** 默认页面 */
 const defaultPage = "/nothing";
+/** 当前选中的菜单 */
 const currentMenu = ref<string[]>([defaultPage]);
+/** 菜单搜索条件 */
+const search = ref("");
+/** 菜单 */
+const menu = ref(Menus);
+/** 使用的主题算法 */
+const themeAlgorithm = ref(theme.defaultAlgorithm);
 
 type IMenuClick = { key: string };
 
@@ -18,8 +26,24 @@ function onMenuClick(menu: IMenuClick) {
   router.push(path);
 }
 
-const themeAlgorithm = ref(theme.defaultAlgorithm);
+/**筛选目录 */
+function onSearchMenu() {
+  if (!Menus) return;
+  menu.value = Menus.filter((item) => {
+    return (
+      item &&
+      item.children.some((child: any) => child.label.includes(search.value))
+    );
+  }).map((item) => {
+    let result = { ...item };
+    result.children = item.children.filter((child) =>
+      child.label.includes(search.value)
+    );
+    return result;
+  });
+}
 
+/** 更换主题 */
 function changeTheme(isDark: boolean) {
   if (isDark) {
     themeAlgorithm.value = theme.darkAlgorithm;
@@ -27,8 +51,9 @@ function changeTheme(isDark: boolean) {
     themeAlgorithm.value = theme.defaultAlgorithm;
   }
 }
-
+/** 获取系统配色方案 */
 const colorSchema = window.matchMedia("(prefers-color-scheme: dark)");
+/** 监听系统配色方案是否改变，以切换浅色/暗黑主题 */
 colorSchema.addEventListener("change", (event) => {
   changeTheme(event.matches);
 });
@@ -47,11 +72,17 @@ onMounted(() => {
   >
     <a-layout style="height: 100%">
       <a-layout-sider :width="width" theme="light" class="sidebar">
+        <a-input
+          placeholder="搜索目录"
+          v-model:value="search"
+          @change="onSearchMenu"
+        />
         <a-menu
-          :items="Menus"
+          :items="menu"
           mode="vertical"
           v-model:selectedKeys="currentMenu"
           @click="onMenuClick"
+          class="ant-menu"
         />
       </a-layout-sider>
       <a-layout-content>
@@ -72,6 +103,12 @@ body,
 
 .sidebar {
   padding-left: 1rem;
+  height: 100%;
+}
+
+.ant-menu {
+  height: calc(100% - 50px);
+  overflow: auto;
 }
 
 .menu-group {

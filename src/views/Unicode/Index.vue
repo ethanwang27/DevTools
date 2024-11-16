@@ -120,7 +120,7 @@ const copyDisable = computed(() => !convertResult.value);
     />
   </div>
 </template>
-<style lang="less">
+<style lang="less" scoped>
 @import url("/src/style/base/button.less");
 @import url("/src/style/common.less");
 @input-height: calc((100% - 46px) / 2);

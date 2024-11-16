@@ -46,7 +46,7 @@ console.log('ttt')
     flex: 1;
     overflow: auto;
     margin: 3px;
-    padding: 3px;
+    // padding: 3px;
   }
 }
 </style>

@@ -1,22 +1,4 @@
 import { MenuProps } from "ant-design-vue";
-import { menuProps } from "ant-design-vue/es/menu/src/Menu";
-// export const Menus = [
-//   {
-//     title: "目录1",
-//     icon: "",
-//     subMenu: [
-//       {
-//         title: "子目录1",
-//         link: "nothing",
-//         icon: "",
-//       },
-//     ],
-//   },
-//   {
-//     title: "生成二维码",
-//     link: "generateQrCode",
-//   },
-// ];
 
 export const Menus: MenuProps["items"] = [
   {
@@ -51,11 +33,11 @@ export const Menus: MenuProps["items"] = [
   },
   {
     type: "group",
-    label: "测试",
+    label: "Markdown",
     children: [
       {
-        label: "Markdown渲染测试",
-        key: "testMarkDown",
+        label: "Markdown预览",
+        key: "previewMarkdown",
       },
     ],
   },
