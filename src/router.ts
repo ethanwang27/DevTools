@@ -19,6 +19,11 @@ export default createRouter({
       component: () => import("./views/Unicode/Index.vue"),
     },
     {
+      path: "/regexp",
+      name: "regexp",
+      component: () => import("./views/RegExp/Index.vue"),
+    },
+    {
       path: "/preview-markdown",
       name: "previewMarkdown",
       component: () => import("./views/Markdown/PreviewMarkdown.vue"),

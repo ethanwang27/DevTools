@@ -29,6 +29,10 @@ export const Menus: MenuProps["items"] = [
         label: "Unicode编码转换",
         key: "unicode",
       },
+      {
+        label: "正则表达式",
+        key: "regexp",
+      },
     ],
   },
   {
