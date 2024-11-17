@@ -17,7 +17,7 @@ export const Menus: MenuProps["items"] = [
     children: [
       {
         label: "身份证号码生成",
-        key: "fakeIdNo",
+        key: "generateIdNo",
       },
     ],
   },

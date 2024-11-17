@@ -1,5 +1,6 @@
 use anyhow::Result;
-use std::clone::Clone;
+use cached::proc_macro::cached;
+use std::{clone::Clone, ops::Div};
 
 /// 行政区划编码
 #[derive(Debug, Clone, serde::Deserialize)]
@@ -42,6 +43,14 @@ pub struct DistrictDivision {
     pub code: String,
 }
 
+#[derive(Debug, Clone, serde::Serialize)]
+pub struct DivisionInfo {
+    pub province_name: String,
+    pub city_name: String,
+    pub district_name: String,
+    pub code: String,
+}
+
 impl ProvinceDivision {
     pub fn new(name: &str, code: &str) -> Self {
         Self {
@@ -79,8 +88,19 @@ impl DistrictDivision {
     }
 }
 
+impl DivisionInfo {
+    pub fn new(province: &str, city: &str, district: &str, code: &str) -> Self {
+        Self {
+            province_name: province.to_string(),
+            city_name: city.to_string(),
+            district_name: district.to_string(),
+            code: code.to_string(),
+        }
+    }
+}
 /// 获取所有行政区划信息
-pub fn get_all_division_codes() -> Result<Vec<DivisionCode>> {
+#[cached(result = true)]
+pub fn get_all_division_codes() -> Result<Vec<DivisionCode>, String> {
     let csv_file = "resources/assets/administrative_division_code.csv";
     let mut reader = csv::ReaderBuilder::new()
         .has_headers(true)
@@ -90,7 +110,7 @@ pub fn get_all_division_codes() -> Result<Vec<DivisionCode>> {
     let mut result = vec![];
 
     for division_code in reader.deserialize() {
-        let code: DivisionCode = division_code?;
+        let code: DivisionCode = division_code.expect("解析CSV失败");
         result.push(code);
     }
     Ok(result)
@@ -103,8 +123,10 @@ struct MyState {
     t: std::sync::Mutex<std::collections::HashMap<String, String>>,
 }
 
-pub fn get_all_provinces() -> Result<Vec<ProvinceDivision>> {
-    let division_codes = get_all_division_codes()?;
+#[tauri::command]
+#[cached(result = true)]
+pub fn get_all_provinces() -> Result<Vec<ProvinceDivision>, String> {
+    let division_codes = get_all_division_codes().expect("获取省级行政区划信息失败");
 
     // 根据开始字符串、结尾字符串过滤行政区划
     let filter_division = |start: &str, end: &str| -> Vec<DivisionCode> {
@@ -181,15 +203,22 @@ pub fn get_division_code(
     province: &str,
     city: Option<&str>,
     district: Option<&str>,
-) -> Result<String> {
-    let all_province = get_all_provinces()?;
+) -> Result<DivisionInfo> {
+    let all_province = get_all_provinces().expect("获取省级行政区划信息失败");
     let province = all_province
         .iter()
         .find(|item| item.name == province)
         .expect(format!("未找到{}", province).as_str());
+    let mut result = DivisionInfo::new(
+        &province.code,
+        city.unwrap_or_default(),
+        district.unwrap_or_default(),
+        "",
+    );
 
     if city.is_none() {
-        return Ok(province.code.clone());
+        result.code = province.code.clone();
+        return Ok(result);
     }
     let city = province
         .cities
@@ -198,25 +227,34 @@ pub fn get_division_code(
         .expect(format!("未找到{}", city.unwrap()).as_str());
 
     if district.is_none() {
-        return Ok(city.code.clone());
+        result.code = city.code.clone();
+        return Ok(result);
     }
     let district = city
         .districts
         .iter()
         .find(|item| item.name == district.unwrap())
         .expect(format!("未找到{}", district.unwrap()).as_str());
-    Ok(district.code.clone())
+    result.code = district.code.clone();
+    Ok(result)
 }
 
 /// 随机获取行政区划编码
-pub fn random_division_code() -> Result<String> {
+pub fn random_division_code() -> Result<DivisionInfo> {
     use super::common::random::random_item;
 
-    let all_province = get_all_provinces()?;
+    let all_province = get_all_provinces().expect("获取省级行政区划信息失败");
     let province = random_item(&all_province).expect("随机获取省份失败");
     let city = random_item(&province.cities).expect("随机获取市失败");
+    let mut result = DivisionInfo::new(&province.name, &city.name, "", "");
+    if city.districts.len() == 0 {
+        result.code = city.code.clone();
+        return Ok(result);
+    }
     let district = random_item(&city.districts).expect("随机获取区县失败");
-    Ok(district.code)
+    result.district_name = district.name.clone();
+    result.code = district.code.clone();
+    return Ok(result);
 }
 
 /// # 获取行政区划名称信息

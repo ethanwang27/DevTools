@@ -48,6 +48,7 @@ pub mod random {
         T: Clone + 'static,
     {
         if info.len() == 0 {
+            println!("数组长度为0");
             return None;
         }
         let index = rand_int(0, info.len() as i32);

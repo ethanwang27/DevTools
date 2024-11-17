@@ -14,6 +14,11 @@ export default createRouter({
       component: () => import("./views/QrCode/Index.vue"),
     },
     {
+      path: "/generate-id-no",
+      name: "generateIdNo",
+      component: () => import("./views/IdNo/Index.vue"),
+    },
+    {
       path: "/Unicode",
       name: "unicode",
       component: () => import("./views/Unicode/Index.vue"),

@@ -1,6 +1,8 @@
 mod error;
 mod utils;
 
+use utils::administrative_division::get_all_provinces;
+use utils::id_no::{get_id_no, parse_id_no};
 use utils::qr_code::get_qr_code;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -30,9 +32,9 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
             get_qr_code,
-            // get_all_provinces,
-            // get_id_no,
-            // parse_id_no
+            get_all_provinces,
+            get_id_no,
+            parse_id_no
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

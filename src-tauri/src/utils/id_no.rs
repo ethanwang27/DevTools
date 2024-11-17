@@ -1,16 +1,17 @@
+use std::process::id;
+
 #[allow(dead_code, unused_variables)]
 use super::administrative_division::*;
 use crate::utils::administrative_division::get_division_code;
-use crate::utils::common::random::*;
 use crate::utils::datetime::*;
 use anyhow::{anyhow, Result};
 use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 
-#[derive(Debug, PartialEq, serde::Serialize)]
+#[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct IdNo(String);
 
 /// 性别
-#[derive(Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, PartialEq, Clone, serde::Serialize, serde::Deserialize)]
 pub enum Gender {
     Male = 1,
     Female = 2,
@@ -18,6 +19,7 @@ pub enum Gender {
 
 impl IdNo {
     /// 获取身份证号
+    #[allow(dead_code)]
     pub fn new(
         province: &str,
         city: &str,
@@ -29,8 +31,8 @@ impl IdNo {
             return Err(anyhow!("Birthday传入有误"));
         }
 
-        let division_code = get_division_code(province, Some(city), Some(district))?;
-        Self::generate_id_no(&division_code, &birthday, gender)
+        let division_info = get_division_code(province, Some(city), Some(district))?;
+        Self::generate_id_no(&division_info.code, &birthday, gender)
     }
 
     /// 随机生成身份证号
@@ -43,8 +45,8 @@ impl IdNo {
             _ => Gender::Male,
         };
         let birthday = random_datatime().format("%Y%m%d").to_string();
-        let division_code = random_division_code()?;
-        Self::generate_id_no(&division_code, &birthday, gender)
+        let division_info = random_division_code()?;
+        Self::generate_id_no(&division_info.code, &birthday, gender)
     }
 
     /// 生成身份证号
@@ -116,27 +118,28 @@ pub struct Person {
     pub birthday: Option<DateTime<Local>>,
     /// 性别
     pub gender: Option<Gender>,
+
+    pub id_no: Option<IdNo>,
 }
 
 /// 获取身份证号码
-pub fn get_id_no(person: Person) -> Result<IdNo> {
+#[tauri::command]
+pub fn get_id_no(person: Person) -> Result<Person, String> {
+    println!("获取身份证号码：传入的信息-{:?}", person);
     use super::common::random::{rand_int, random_datatime};
-    let division_code;
+    let division_info;
     if person.province.is_some() || person.city.is_some() || person.district.is_some() {
-        division_code = get_division_code(
+        division_info = get_division_code(
             person.province.unwrap().as_str(),
             Some(person.city.unwrap().as_str()),
             Some(person.district.unwrap().as_str()),
-        )?;
+        )
+        .expect("获取行政区划信息失败");
     } else {
-        division_code = random_division_code()?;
+        division_info = random_division_code().expect("随机获取行政区划信息失败");
     }
 
-    let birthday = person
-        .birthday
-        .unwrap_or(random_datatime())
-        .format("%Y%m%d")
-        .to_string();
+    let birthday = person.birthday.unwrap_or(random_datatime());
     let gender = person.gender.unwrap_or_else(|| {
         if rand_int(1, 3) == 1 {
             Gender::Male
@@ -144,13 +147,31 @@ pub fn get_id_no(person: Person) -> Result<IdNo> {
             Gender::Female
         }
     });
-    IdNo::generate_id_no(division_code.as_str(), birthday.as_str(), gender)
+    println!(
+        "获取身份证号码：行政区划-{:?}; 出生日期-{:?}；性别-{:?}",
+        division_info, birthday, gender
+    );
+    let id = IdNo::generate_id_no(
+        division_info.code.as_str(),
+        birthday.format("%Y%m%d").to_string().as_str(),
+        gender.clone(),
+    )
+    .expect("生成省份证号码错误");
+    return Ok(Person {
+        province: Some(division_info.province_name.clone()),
+        city: Some(division_info.city_name.clone()),
+        district: Some(division_info.district_name.clone()),
+        gender: Some(gender),
+        birthday: Some(birthday),
+        id_no: Some(id),
+    });
 }
 
 /// 解析身份证号码
-pub fn parse_id_no(id_no: &str) -> Result<Person> {
+#[tauri::command]
+pub fn parse_id_no(id_no: &str) -> Result<Person, String> {
     if id_no.is_empty() || id_no.len() != 18 {
-        return Err(anyhow::anyhow!("身份证号码号码位数不正确"));
+        return Err("身份证号码号码位数不正确".to_string());
     }
     let division_code = &id_no[0..6];
     let division = get_division_name(division_code).expect("身份证号码不正确：行政区划解析失败");
@@ -169,9 +190,9 @@ pub fn parse_id_no(id_no: &str) -> Result<Person> {
         .with_timezone(&Local);
     let sequence = id_no[14..17].to_string().parse::<i32>();
     if sequence.is_err() {
-        return Err(anyhow::anyhow!("身份证号码不正确:性别解析失败"));
+        return Err("身份证号码不正确:性别解析失败".to_string());
     }
-    let gender = if sequence? % 2 == 1 {
+    let gender = if sequence.unwrap() % 2 == 1 {
         Gender::Male
     } else {
         Gender::Female
@@ -182,6 +203,7 @@ pub fn parse_id_no(id_no: &str) -> Result<Person> {
         district: Some(division.2),
         birthday: Some(birthday),
         gender: Some(gender),
+        id_no: Some(IdNo(id_no.to_string())),
     })
 }
 
