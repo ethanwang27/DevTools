@@ -19,6 +19,9 @@
     "dialog:allow-open",
     "dialog:allow-save",
     "notification:default",
-    "log:default"
+    "log:default",
+    "fs:default",
+    "fs:allow-resource-read-recursive",
+    "fs:allow-resource-meta-recursive"
   ]
 }

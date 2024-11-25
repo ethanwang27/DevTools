@@ -5,6 +5,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { writeText, writeImage } from "@tauri-apps/plugin-clipboard-manager";
 import { message } from "ant-design-vue";
 import TButton from "../../components/base/TButton.vue";
+import log from "../../utils/logger";
 
 const formRef = ref();
 const rules: Record<string, Rule[]> = {
@@ -96,14 +97,18 @@ async function writeBase64ToClipboard() {
 async function writeImageToClipboard() {
   if (!qrCodeBase64.value) return;
   // 参考链接：https://stackoverflow.com/questions/76679845/save-canvas-data-as-png-or-jpg-in-tauri-using-fs-module
-  const binaryString = atob(qrCodeBase64.value as string);
-  const length = binaryString.length;
-  const binaryArray = new Uint8Array(length);
-  for (let i = 0; i < length; i++) {
-    binaryArray[i] = binaryString.charCodeAt(i);
+  try {
+    const binaryString = atob(qrCodeBase64.value as string);
+    const length = binaryString.length;
+    const binaryArray = new Uint8Array(length);
+    for (let i = 0; i < length; i++) {
+      binaryArray[i] = binaryString.charCodeAt(i);
+    }
+    await writeImage(binaryArray);
+    message.success("已复制二维码图片");
+  } catch (error) {
+    log(`Data URI convert to Unit*Array fail: ${error}`, "error");
   }
-  await writeImage(binaryArray);
-  message.success("已复制二维码图片");
 }
 
 onMounted(() => setDefaultFormData());
