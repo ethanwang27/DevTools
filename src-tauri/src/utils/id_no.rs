@@ -244,6 +244,7 @@ mod tests {
             district: None,
             gender: None,
             birthday: None,
+            id_no: None,
         };
 
         let actual = get_id_no(person);
@@ -255,6 +256,7 @@ mod tests {
             district: Some("东城区".to_string()),
             gender: None,
             birthday: None,
+            id_no: None,
         };
         let actual = get_id_no(person);
         assert!(actual.is_ok());
@@ -265,6 +267,7 @@ mod tests {
             district: Some("东城区".to_string()),
             gender: Some(Gender::Male),
             birthday: None,
+            id_no: None,
         };
         let actual = get_id_no(person);
         assert!(actual.is_ok());
@@ -275,6 +278,7 @@ mod tests {
             district: Some("东城区".to_string()),
             gender: Some(Gender::Female),
             birthday: Some(Local::now().checked_sub_months(Months::new(300)).unwrap()),
+            id_no: None,
         };
         let actual = get_id_no(person);
         assert!(actual.is_ok());
@@ -289,6 +293,7 @@ mod tests {
             district: Some("东城区".to_string()),
             birthday: Some(Local.with_ymd_and_hms(1985i32, 07, 18, 0, 0, 0).unwrap()),
             gender: Some(Gender::Female),
+            id_no: None,
         };
         let actual = parse_id_no(id_no);
         assert!(actual.is_ok());
@@ -301,6 +306,7 @@ mod tests {
             district: Some("惠安县".to_string()),
             birthday: Some(Local.with_ymd_and_hms(1985i32, 07, 18, 0, 0, 0).unwrap()),
             gender: Some(Gender::Male),
+            id_no: None,
         };
         let actual = parse_id_no(id_no);
         assert!(actual.is_ok());

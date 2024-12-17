@@ -366,7 +366,7 @@ mod tests {
         assert!(actual.is_ok(), "未找到北京市行政编码");
         assert_eq!(
             excepted_code,
-            actual.unwrap().as_str(),
+            actual.unwrap().code.as_str(),
             "北京市行政编码错误"
         );
 
@@ -375,7 +375,7 @@ mod tests {
         assert!(actual.is_ok(), "未找到北京市行政编码");
         assert_eq!(
             excepted_code,
-            actual.unwrap().as_str(),
+            actual.unwrap().code.as_str(),
             "北京市行政编码错误"
         );
 
@@ -384,7 +384,7 @@ mod tests {
         assert!(actual.is_ok(), "未找到北京市行政编码");
         assert_eq!(
             excepted_code,
-            actual.unwrap().as_str(),
+            actual.unwrap().code.as_str(),
             "北京市行政编码错误"
         );
 
@@ -394,7 +394,7 @@ mod tests {
         assert!(actual.is_ok(), "未找到浙江省舟山市普陀区行政编码");
         assert_eq!(
             excepted_code,
-            actual.unwrap().as_str(),
+            actual.unwrap().code.as_str(),
             "未找到浙江省舟山市普陀区行政编码错误"
         );
     }
