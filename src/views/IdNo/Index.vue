@@ -22,6 +22,7 @@ interface IState {
   num: number;
   provinceData: Array<IProvince>;
   idNoList: Array<IPersonInfo>;
+  showSpinning: boolean;
 }
 
 interface IProvince extends IDivision {
@@ -49,6 +50,7 @@ const state = reactive<IState>({
   },
   provinceData: [],
   idNoList: [],
+  showSpinning: false,
 });
 
 const checkDivision = async (rule: Rule, value: string) => {
@@ -152,8 +154,10 @@ function copyToClipboard() {
 }
 
 function generateIds() {
+  state.idNoList = [];
   if (!formRef.value) return;
   formRef.value.validate().then(() => {
+    state.showSpinning = true;
     let person = {
       province: state.personInfo.province,
       city: state.personInfo.city,
@@ -171,9 +175,12 @@ function generateIds() {
     Promise.all(getIdFunc)
       .then((res) => {
         state.idNoList = res as Array<IPersonInfo>;
-        console.log(state.idNoList);
+        state.showSpinning = false;
       })
-      .catch((err) => message.error(`获取身份证号码信息失败：${err}`));
+      .catch((err) => {
+        message.error(`获取身份证号码信息失败：${err}`);
+        state.showSpinning = false;
+      });
   });
 }
 
@@ -256,21 +263,39 @@ onMounted(() => getProvinceInfo());
         </a-radio-group>
       </a-form-item>
       <a-form-item label="生成数量" key="num">
-        <a-input-number v-model:value="state.num" />
+        <a-input-number v-model:value="state.num" :max="100" />
       </a-form-item>
     </a-form>
     <div class="action">
-      <t-button type="primary" danger @click="reset">重置</t-button>
       <t-button
         type="primary"
-        :disabled="state.idNoList.length === 0"
+        danger
+        @click="reset"
+        :disabled="state.showSpinning"
+        >重置</t-button
+      >
+      <t-button
+        type="primary"
+        :disabled="state.idNoList.length === 0 || state.showSpinning"
         @click="copyToClipboard"
         >复制</t-button
       >
-      <t-button type="primary" @click="generateIds">生成</t-button>
+      <t-button
+        type="primary"
+        @click="generateIds"
+        :disabled="state.showSpinning"
+        >生成</t-button
+      >
     </div>
     <a-divider dashed class="divider" />
+
     <div class="result-container">
+      <a-spin
+        tip="身份证号生成中……"
+        size="large"
+        :spinning="state.showSpinning"
+        style="height: 100%; width: 100%"
+      />
       <a-list v-for="(item, index) in state.idNoList" :key="index">
         <a-row>
           <a-col span="6" class="title">身份证号码：</a-col>
@@ -299,6 +324,7 @@ onMounted(() => getProvinceInfo());
         <a-divider dashed class="divider" />
       </a-list>
     </div>
+    <!-- </a-spin> -->
   </div>
 </template>
 <style lang="less" scoped>
@@ -314,9 +340,11 @@ onMounted(() => getProvinceInfo());
 .divider {
   margin: 3px 0;
 }
+
 .result-container {
   height: calc(100% - 200px - @action-height);
   overflow: auto;
+
   .title {
     text-align: right;
   }

@@ -32,6 +32,7 @@ declare module 'vue' {
     ARow: typeof import('ant-design-vue/lib')['Row']
     ASelect: typeof import('ant-design-vue/lib')['Select']
     ASpace: typeof import('ant-design-vue/lib')['Space']
+    ASpin: typeof import('ant-design-vue/lib')['Spin']
     ASubMenu: typeof import('ant-design-vue/lib')['SubMenu']
     ATextarea: typeof import('ant-design-vue/lib')['Textarea']
     HighlightTextarea: typeof import('./src/components/HighlightTextarea.vue')['default']
