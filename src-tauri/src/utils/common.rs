@@ -34,10 +34,10 @@ pub mod random {
     }
 
     /// 随机生成日期时间
-    pub fn random_datatime() -> DateTime<Local> {
-        let datatime = Local::now();
+    pub fn random_datetime() -> DateTime<Local> {
+        let datetime = Local::now();
         let months = rand_int(36, 720) as u32;
-        datatime
+        datetime
             .checked_sub_months(Months::new(months))
             .expect("Datetime overflow")
     }
@@ -48,7 +48,6 @@ pub mod random {
         T: Clone + 'static,
     {
         if info.len() == 0 {
-            println!("数组长度为0");
             return None;
         }
         let index = rand_int(0, info.len() as i32);
@@ -91,19 +90,18 @@ mod test {
 
     #[test]
     fn test_rand_datetime() {
-        let actual = random_datatime();
+        let actual = random_datetime();
         let now = Local::now();
         let max_datetime = now.checked_sub_months(Months::new(36)).unwrap();
-        let min_datatime = now.checked_sub_months(Months::new(720)).unwrap();
+        let min_datetime = now.checked_sub_months(Months::new(720)).unwrap();
         assert!(actual <= max_datetime);
-        assert!(actual > min_datatime);
+        assert!(actual > min_datetime);
     }
 
     #[test]
     fn test_random_item() {
         let vec = vec![1, 2, 3, 4, 5];
         let actual = random_item(&vec);
-        println!("actual: {:?}", actual);
         assert!(actual.is_some(), "随机获取元素失败");
 
         use super::super::administrative_division::ProvinceDivision;
@@ -116,12 +114,10 @@ mod test {
             ProvinceDivision::new("f", "6"),
         ];
         let actual = random_item(&vec);
-        println!("actual: {:?}", actual);
         assert!(actual.is_some(), "随机获取元素失败");
 
         let vec: Vec<i32> = vec![];
         let actual = random_item(&vec);
-        println!("actual: {:?}", actual);
         assert!(actual.is_none(), "随机获取元素失败");
     }
 }

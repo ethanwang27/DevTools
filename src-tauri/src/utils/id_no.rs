@@ -38,13 +38,13 @@ impl IdNo {
     /// 随机生成身份证号
     #[allow(dead_code)]
     pub fn random() -> Result<Self> {
-        use super::common::random::{rand_int, random_datatime};
+        use super::common::random::{rand_int, random_datetime};
         let gender = match rand_int(1, 3) {
             1 => Gender::Male,
             2 => Gender::Female,
             _ => Gender::Male,
         };
-        let birthday = random_datatime().format("%Y%m%d").to_string();
+        let birthday = random_datetime().format("%Y%m%d").to_string();
         let division_info = random_division_code()?;
         Self::generate_id_no(&division_info.code, &birthday, gender)
     }
@@ -125,8 +125,7 @@ pub struct Person {
 /// 获取身份证号码
 #[tauri::command]
 pub fn get_id_no(person: Person) -> Result<Person, String> {
-    println!("获取身份证号码：传入的信息-{:?}", person);
-    use super::common::random::{rand_int, random_datatime};
+    use super::common::random::{rand_int, random_datetime};
     let division_info;
     if person.province.is_some() || person.city.is_some() || person.district.is_some() {
         division_info = get_division_code(
@@ -139,7 +138,7 @@ pub fn get_id_no(person: Person) -> Result<Person, String> {
         division_info = random_division_code().expect("随机获取行政区划信息失败");
     }
 
-    let birthday = person.birthday.unwrap_or(random_datatime());
+    let birthday = person.birthday.unwrap_or(random_datetime());
     let gender = person.gender.unwrap_or_else(|| {
         if rand_int(1, 3) == 1 {
             Gender::Male
@@ -147,10 +146,7 @@ pub fn get_id_no(person: Person) -> Result<Person, String> {
             Gender::Female
         }
     });
-    println!(
-        "获取身份证号码：行政区划-{:?}; 出生日期-{:?}；性别-{:?}",
-        division_info, birthday, gender
-    );
+
     let id = IdNo::generate_id_no(
         division_info.code.as_str(),
         birthday.format("%Y%m%d").to_string().as_str(),
