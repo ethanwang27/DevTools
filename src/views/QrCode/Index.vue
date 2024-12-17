@@ -95,10 +95,10 @@ async function writeBase64ToClipboard() {
  * 将二维码图片复制到剪贴板
  */
 async function writeImageToClipboard() {
-  if (!qrCodeBase64.value) return;
+  if (!qrCodeInfo.value) return;
   // 参考链接：https://stackoverflow.com/questions/76679845/save-canvas-data-as-png-or-jpg-in-tauri-using-fs-module
   try {
-    const binaryString = atob(qrCodeBase64.value as string);
+    const binaryString = atob(qrCodeInfo.value as string);
     const length = binaryString.length;
     const binaryArray = new Uint8Array(length);
     for (let i = 0; i < length; i++) {
@@ -107,7 +107,10 @@ async function writeImageToClipboard() {
     await writeImage(binaryArray);
     message.success("已复制二维码图片");
   } catch (error) {
-    log(`Data URI convert to Unit*Array fail: ${error}`, "error");
+    log(
+      `Data URI convert to Unit*Array fail: ${error}; QrCode Base64: ${qrCodeBase64.value}`,
+      "error"
+    );
   }
 }
 
