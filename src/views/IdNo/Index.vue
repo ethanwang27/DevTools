@@ -47,6 +47,7 @@ const state = reactive<IState>({
     district: null,
     birthday: "",
     gender: null,
+    id_no: null,
   },
   provinceData: [],
   idNoList: [],
