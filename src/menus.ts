@@ -40,6 +40,10 @@ export const Menus: MenuProps["items"] = [
     label: "Encoder/Decoder",
     children: [
       {
+        label: "Base64",
+        key: "base64",
+      },
+      {
         label: "哈希生成",
         key: "hashGenerator",
       },

@@ -14,14 +14,22 @@
 }
   
 
-.tow-split-container {
+.horizon-tow-split-container {
     display: flex;
     margin-top: 3px; 
 
-    .tow-split-content {
+    .split-content {
         flex: 1;
         width: calc(50% -3px);
         height: 100%;
+    }
+}
+
+.vertical-tow-split-container {
+
+    .split-content {
+        width: 100%;
+        height: calc(50% - 1.5rem);
     }
 }
 
@@ -29,7 +37,7 @@
 .action {
     display: flex;
     justify-content: right;
-    height: 40px;
+    height: 3rem;
     margin: 3px 5px;
 }
 

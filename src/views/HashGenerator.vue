@@ -47,14 +47,14 @@ function generateHash() {
    */
   const generateHash = async (
     hashType:
-      | "Md2"
-      | "Md4"
-      | "Md5"
-      | "Sha1"
-      | "Sha224"
-      | "Sha256"
-      | "Sha384"
-      | "Sha512",
+      | "MD2"
+      | "MD4"
+      | "MD5"
+      | "SHA1"
+      | "SHA224"
+      | "SHA256"
+      | "SHA384"
+      | "SHA512",
     callback: (result: string) => {}
   ) => {
     let hash: string = await invoke("hash_generate", {
@@ -67,14 +67,14 @@ function generateHash() {
 
   // 异步生成hash
   Promise.all([
-    generateHash("Md2", (result) => (state.MD2 = result)),
-    generateHash("Md4", (result) => (state.MD4 = result)),
-    generateHash("Md5", (result) => (state.MD5 = result)),
-    generateHash("Sha1", (result) => (state.SHA1 = result)),
-    generateHash("Sha224", (result) => (state.SHA224 = result)),
-    generateHash("Sha256", (result) => (state.SHA256 = result)),
-    generateHash("Sha384", (result) => (state.SHA384 = result)),
-    generateHash("Sha512", (result) => (state.SHA512 = result)),
+    generateHash("MD2", (result) => (state.MD2 = result)),
+    generateHash("MD4", (result) => (state.MD4 = result)),
+    generateHash("MD5", (result) => (state.MD5 = result)),
+    generateHash("SHA1", (result) => (state.SHA1 = result)),
+    generateHash("SHA224", (result) => (state.SHA224 = result)),
+    generateHash("SHA256", (result) => (state.SHA256 = result)),
+    generateHash("SHA384", (result) => (state.SHA384 = result)),
+    generateHash("SHA512", (result) => (state.SHA512 = result)),
   ])
     .then((_) => {
       message.info("生成成功");
@@ -142,7 +142,7 @@ function clearHashResult() {
     </div>
     <div class="hash-content">
       <a-form :labelCol="{ style: 'width: 5rem' }" labelAlign="right">
-        <a-form-item key="md2" label="MD2">
+        <a-form-item key="MD2" label="MD2">
           <a-input v-model:value="state.MD2">
             <template #suffix>
               <CopyTwoTone
@@ -152,7 +152,7 @@ function clearHashResult() {
             </template>
           </a-input>
         </a-form-item>
-        <a-form-item key="md4" label="MD4">
+        <a-form-item key="MD4" label="MD4">
           <a-input v-model:value="state.MD4">
             <template #suffix>
               <CopyTwoTone
@@ -162,7 +162,7 @@ function clearHashResult() {
             </template>
           </a-input>
         </a-form-item>
-        <a-form-item key="md5" label="MD5">
+        <a-form-item key="MD5" label="MD5">
           <a-input v-model:value="state.MD5">
             <template #suffix>
               <CopyTwoTone

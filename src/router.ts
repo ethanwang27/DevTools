@@ -38,5 +38,10 @@ export default createRouter({
       name: "hashGenerator",
       component: () => import("./views/HashGenerator.vue"),
     },
+    {
+      path: "/base64",
+      name: "base64",
+      component: () => import("./views/Base64.vue"),
+    },
   ],
 });
