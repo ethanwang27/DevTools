@@ -37,6 +37,16 @@ export const Menus: MenuProps["items"] = [
   },
   {
     type: "group",
+    label: "Encoder/Decoder",
+    children: [
+      {
+        label: "哈希生成",
+        key: "hashGenerator",
+      },
+    ],
+  },
+  {
+    type: "group",
     label: "Markdown",
     children: [
       {

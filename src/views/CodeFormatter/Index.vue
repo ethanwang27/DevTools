@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { detect } from "../../utils/languageDetection";
-import log from "../../utils/logger";
 
 const state = reactive({
     code: "",
@@ -14,9 +13,9 @@ async function detectLanguage() {
     state.language = result;
 }
 
-async function formatCode() {
-    return "";
-}
+// async function formatCode() {
+//     return "";
+// }
 </script>
 <template>
     <div class="main-container">

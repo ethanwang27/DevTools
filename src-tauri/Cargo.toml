@@ -37,7 +37,15 @@ mockall = "0.13.0"
 anyhow = "1.0.93"
 cached = "0.54.0"
 tauri-plugin-fs = "2"
+md-5 = "0.10.6"
+md2 = "0.10.2"
+md4 = "0.10.2"
+sha1 = "0.10.6"
+sha2 = "0.10.8"
+sha3 = "0.10.8"
+base16ct = { version = "0.2.0", features = ["alloc"] }
 
 [dev-dependencies]
 mockall = "0.13.0"
 mockall_double = "0.3.1"
+test-case = "3.3.1"

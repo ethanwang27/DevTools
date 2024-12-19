@@ -24,12 +24,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/logo.png",
-      "icons/logo.svg"
-    ],
-    "resources": [
-      "resources/"
-    ]
+    "icon": ["icons/logo.png"],
+    "resources": ["resources/"]
   }
 }

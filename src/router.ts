@@ -33,5 +33,10 @@ export default createRouter({
       name: "previewMarkdown",
       component: () => import("./views/Markdown/PreviewMarkdown.vue"),
     },
+    {
+      path: "/hash-generator",
+      name: "hashGenerator",
+      component: () => import("./views/HashGenerator.vue"),
+    },
   ],
 });

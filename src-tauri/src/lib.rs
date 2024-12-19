@@ -2,6 +2,7 @@ mod error;
 mod utils;
 
 use utils::administrative_division::get_all_provinces;
+use utils::hashes::hash_generate;
 use utils::id_no::{get_id_no, parse_id_no};
 use utils::qr_code::get_qr_code;
 
@@ -33,7 +34,8 @@ pub fn run() {
             get_qr_code,
             get_all_provinces,
             get_id_no,
-            parse_id_no
+            parse_id_no,
+            hash_generate
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
