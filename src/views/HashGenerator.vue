@@ -135,7 +135,9 @@ function clearHashResult() {
         style="margin-top: 0.5rem"
         @change="generateHash"
       />
-      <t-button @click="clear" type="primary" danger>清空</t-button>
+      <t-button @click="clear" type="primary" danger :disabled="!state.inputStr"
+        >清空</t-button
+      >
       <t-button @click="generateHash" type="primary" :disabled="!state.inputStr"
         >生成</t-button
       >
@@ -143,7 +145,7 @@ function clearHashResult() {
     <div class="hash-content">
       <a-form :labelCol="{ style: 'width: 5rem' }" labelAlign="right">
         <a-form-item key="MD2" label="MD2">
-          <a-input v-model:value="state.MD2">
+          <a-input v-model:value="state.MD2" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.MD2"
@@ -153,7 +155,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="MD4" label="MD4">
-          <a-input v-model:value="state.MD4">
+          <a-input v-model:value="state.MD4" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.MD4"
@@ -163,7 +165,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="MD5" label="MD5">
-          <a-input v-model:value="state.MD5">
+          <a-input v-model:value="state.MD5" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.MD5"
@@ -173,7 +175,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="SHA1" label="SHA1">
-          <a-input v-model:value="state.SHA1">
+          <a-input v-model:value="state.SHA1" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.SHA1"
@@ -183,7 +185,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="SHA224" label="SHA224">
-          <a-input v-model:value="state.SHA224">
+          <a-input v-model:value="state.SHA224" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.SHA224"
@@ -193,7 +195,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="SHA256" label="SHA256">
-          <a-input v-model:value="state.SHA256">
+          <a-input v-model:value="state.SHA256" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.SHA256"
@@ -203,7 +205,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="SHA384" label="SHA384">
-          <a-input v-model:value="state.SHA384">
+          <a-input v-model:value="state.SHA384" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.SHA384"
@@ -213,7 +215,7 @@ function clearHashResult() {
           </a-input>
         </a-form-item>
         <a-form-item key="SHA512" label="SHA512">
-          <a-input v-model:value="state.SHA512">
+          <a-input v-model:value="state.SHA512" readonly>
             <template #suffix>
               <CopyTwoTone
                 v-if="state.SHA512"

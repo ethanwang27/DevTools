@@ -44,8 +44,16 @@ export const Menus: MenuProps["items"] = [
         key: "base64",
       },
       {
-        label: "哈希生成",
+        label: "Hash生成",
         key: "hashGenerator",
+      },
+      {
+        label: "URL编码/解码",
+        key: "urlEncoding",
+      },
+      {
+        label: "URL解析",
+        key: "urlParser",
       },
     ],
   },

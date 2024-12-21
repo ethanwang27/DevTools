@@ -5,6 +5,7 @@ use utils::base64util::{base64_decode, base64_encode};
 use utils::hashes::hash_generate;
 use utils::id_no::{get_id_no, parse_id_no};
 use utils::qr_code::get_qr_code;
+use utils::url_utils::{url_decode, url_encode};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -37,7 +38,9 @@ pub fn run() {
             parse_id_no,
             hash_generate,
             base64_encode,
-            base64_decode
+            base64_decode,
+            url_decode,
+            url_encode
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

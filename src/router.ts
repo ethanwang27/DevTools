@@ -43,5 +43,15 @@ export default createRouter({
       name: "base64",
       component: () => import("./views/Base64.vue"),
     },
+    {
+      path: "/url-encoding",
+      name: "urlEncoding",
+      component: () => import("./views/Url/UrlEncoding.vue"),
+    },
+    {
+      path: "/url-parser",
+      name: "urlParser",
+      component: () => import("./views/Url/UrlParser.vue"),
+    },
   ],
 });

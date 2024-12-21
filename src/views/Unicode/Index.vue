@@ -87,52 +87,41 @@ function clear() {
 const copyDisable = computed(() => !convertResult.value);
 </script>
 <template>
-  <div class="top-input">
-    <a-textarea
-      placeholder="请输入unicode字符串或汉字"
-      v-model:value="inputStr"
-      :status="convertTextareaStatus"
-      class="full-textarea"
-      style="height: 100%"
-      @change="() => (convertResult = '')"
-    />
-  </div>
-  <div class="action">
-    <t-button @click="convertUnicodeToChinese" type="primary"
-      >Unicode转汉字</t-button
-    >
-    <t-button @click="convertChineseToUnicode" type="primary"
-      >汉字转换Unicode</t-button
-    >
-    <t-button @click="copyResult" type="primary" :disabled="copyDisable"
-      >复制结果</t-button
-    >
-    <t-button @click="clear" type="primary" danger :disabled="copyDisable"
-      >清空</t-button
-    >
-  </div>
-  <div class="bottom-input">
-    <a-textarea
-      placeholder="转换结果"
-      v-model:value="convertResult"
-      class="full-textarea"
-      readOnly
-    />
+  <div class="main-container vertical-two-split-container">
+    <div class="split-content">
+      <a-textarea
+        placeholder="请输入unicode字符串或汉字"
+        v-model:value="inputStr"
+        :status="convertTextareaStatus"
+        class="full-textarea"
+        style="height: 100%"
+        @change="() => (convertResult = '')"
+      />
+    </div>
+    <div class="action">
+      <t-button @click="clear" type="primary" danger :disabled="copyDisable"
+        >清空</t-button
+      >
+      <t-button @click="copyResult" type="primary" :disabled="copyDisable"
+        >复制结果</t-button
+      >
+      <t-button @click="convertUnicodeToChinese" type="primary"
+        >Unicode转汉字</t-button
+      >
+      <t-button @click="convertChineseToUnicode" type="primary"
+        >汉字转换Unicode</t-button
+      >
+    </div>
+    <div class="split-content">
+      <a-textarea
+        placeholder="转换结果"
+        v-model:value="convertResult"
+        class="full-textarea"
+        readOnly
+      />
+    </div>
   </div>
 </template>
 <style lang="less" scoped>
-@import url("/src/style/base/button.less");
 @import url("/src/style/common.less");
-@input-height: calc((100% - 46px) / 2);
-@input-margin: 0px 5px 0px 0px;
-
-.top-input {
-  height: @input-height;
-  margin: @input-margin;
-}
-
-.bottom-input {
-  height: @input-height;
-  margin: @input-margin;
-}
 </style>

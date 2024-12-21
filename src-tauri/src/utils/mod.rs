@@ -6,3 +6,4 @@ mod datetime;
 pub mod hashes;
 pub mod id_no;
 pub mod qr_code;
+pub mod url_utils;
