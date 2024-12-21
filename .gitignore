@@ -26,6 +26,7 @@ dist-ssr
 *.sw?
 
 pnpm-lock.yaml
+**/cargo.lock
 
 # 忽略自动导入的前端组件
 components.d.ts
