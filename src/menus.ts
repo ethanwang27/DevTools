@@ -48,6 +48,10 @@ export const Menus: MenuProps["items"] = [
         key: "hashGenerator",
       },
       {
+        label: "Hmac生成",
+        key: "hmacGenerator",
+      },
+      {
         label: "URL编码/解码",
         key: "urlEncoding",
       },

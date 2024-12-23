@@ -4,6 +4,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { message } from "ant-design-vue";
 import log from "../utils/logger";
+import { EHashType } from "../enums/HashType";
 
 interface IState {
   inputStr: String;
@@ -46,20 +47,12 @@ function generateHash() {
    * @param callback 生成Hash后的回调
    */
   const generateHash = async (
-    hashType:
-      | "MD2"
-      | "MD4"
-      | "MD5"
-      | "SHA1"
-      | "SHA224"
-      | "SHA256"
-      | "SHA384"
-      | "SHA512",
+    hashType: EHashType,
     callback: (result: string) => {}
   ) => {
     let hash: string = await invoke("hash_generate", {
       data: state.inputStr,
-      hashType: hashType,
+      hashType: `${EHashType[hashType]}`,
       lowercase: state.lowercase,
     });
     callback(hash);
@@ -67,14 +60,14 @@ function generateHash() {
 
   // 异步生成hash
   Promise.all([
-    generateHash("MD2", (result) => (state.MD2 = result)),
-    generateHash("MD4", (result) => (state.MD4 = result)),
-    generateHash("MD5", (result) => (state.MD5 = result)),
-    generateHash("SHA1", (result) => (state.SHA1 = result)),
-    generateHash("SHA224", (result) => (state.SHA224 = result)),
-    generateHash("SHA256", (result) => (state.SHA256 = result)),
-    generateHash("SHA384", (result) => (state.SHA384 = result)),
-    generateHash("SHA512", (result) => (state.SHA512 = result)),
+    generateHash(EHashType.MD2, (result) => (state.MD2 = result)),
+    generateHash(EHashType.MD4, (result) => (state.MD4 = result)),
+    generateHash(EHashType.MD5, (result) => (state.MD5 = result)),
+    generateHash(EHashType.SHA1, (result) => (state.SHA1 = result)),
+    generateHash(EHashType.SHA224, (result) => (state.SHA224 = result)),
+    generateHash(EHashType.SHA256, (result) => (state.SHA256 = result)),
+    generateHash(EHashType.SHA384, (result) => (state.SHA384 = result)),
+    generateHash(EHashType.SHA512, (result) => (state.SHA512 = result)),
   ])
     .then((_) => {
       message.info("生成成功");

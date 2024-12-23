@@ -39,6 +39,11 @@ export default createRouter({
       component: () => import("./views/HashGenerator.vue"),
     },
     {
+      path: "/hmac-generator",
+      name: "hmacGenerator",
+      component: () => import("./views/HmacGenerator.vue"),
+    },
+    {
       path: "/base64",
       name: "base64",
       component: () => import("./views/Base64.vue"),
