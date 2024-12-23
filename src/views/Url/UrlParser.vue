@@ -139,47 +139,19 @@ async function copyToClipboard(data: string) {
         labelAlign="right"
       >
         <a-form-item label="协议" key="protocol">
-          <div class="input-compact">
-            <a-input v-model:value="state.protocol" readonly />
-            <a-tooltip title="复制" color="blue">
-              <a-button @click="copyToClipboard(state.protocol)">
-                <template #icon><CopyTwoTone /></template>
-              </a-button>
-            </a-tooltip>
-          </div>
+          <input-with-copy v-model="state.protocol" :readonly="true" />
         </a-form-item>
         <a-form-item label="Host" key="Host">
-          <div class="input-compact">
-            <a-input v-model:value="state.host" readonly />
-            <a-tooltip title="复制" color="blue">
-              <a-button @click="copyToClipboard(state.host)">
-                <template #icon><CopyTwoTone /></template>
-              </a-button>
-            </a-tooltip>
-          </div>
+          <input-with-copy v-model="state.host" :readonly="true" />
         </a-form-item>
         <a-form-item label="Port" key="port">
-          <div class="input-compact">
-            <a-input v-model:value="state.port" readonly />
-            <a-tooltip title="复制" color="blue">
-              <a-button @click="copyToClipboard(state.port)">
-                <template #icon><CopyTwoTone /></template>
-              </a-button>
-            </a-tooltip>
-          </div>
+          <input-with-copy v-model="state.port" :readonly="true" />
         </a-form-item>
         <a-form-item label="路径" key="path">
-          <div class="input-compact">
-            <a-input v-model:value="state.path" readonly />
-            <a-tooltip title="复制" color="blue">
-              <a-button @click="copyToClipboard(state.path)">
-                <template #icon><CopyTwoTone /></template>
-              </a-button>
-            </a-tooltip>
-          </div>
+          <input-with-copy v-model="state.path" :readonly="true" />
         </a-form-item>
         <a-form-item label="查询参数" class="query-parameters">
-          <div style="display: flex; justify-content: flex-end">
+          <div class="input-compact">
             <a-radio-group v-model:value="state.paraDisplayWay">
               <a-radio-button :value="ParaDisplayWay.Original"
                 >原始字符串</a-radio-button
@@ -191,7 +163,11 @@ async function copyToClipboard(data: string) {
               >
             </a-radio-group>
             <a-tooltip title="复制" color="blue">
-              <a-button @click="copyToClipboard(displayQueryParas)">
+              <a-button
+                @click="copyToClipboard(displayQueryParas)"
+                :disabled="!displayQueryParas"
+                style="margin-left: 0.5rem"
+              >
                 <template #icon>
                   <CopyTwoTone />
                 </template>
@@ -224,6 +200,7 @@ async function copyToClipboard(data: string) {
 
     .input-compact {
       display: flex;
+      justify-content: flex-end;
     }
 
     .query-parameters {

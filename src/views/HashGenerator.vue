@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 import { invoke } from "@tauri-apps/api/core";
-import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { message } from "ant-design-vue";
 import log from "../utils/logger";
 import { EHashType } from "../enums/HashType";
@@ -78,16 +77,6 @@ function generateHash() {
 }
 
 /**
- * 将数据复制到剪贴板
- * @param data 复制到Clipboard的数据
- */
-async function copyToClipboard(data: string) {
-  if (!data) return;
-  await writeText(data);
-  message.info("复制成功");
-}
-
-/**
  * 清空输入框以及Hash结果
  */
 function clear() {
@@ -138,84 +127,28 @@ function clearHashResult() {
     <div class="hash-content">
       <a-form :labelCol="{ style: 'width: 5rem' }" labelAlign="right">
         <a-form-item key="MD2" label="MD2">
-          <a-input v-model:value="state.MD2" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.MD2"
-                @click="copyToClipboard(state.MD2)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.MD2" :readonly="true" />
         </a-form-item>
         <a-form-item key="MD4" label="MD4">
-          <a-input v-model:value="state.MD4" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.MD4"
-                @click="copyToClipboard(state.MD4)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.MD4" :readonly="true" />
         </a-form-item>
         <a-form-item key="MD5" label="MD5">
-          <a-input v-model:value="state.MD5" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.MD5"
-                @click="copyToClipboard(state.MD5)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.MD5" :readonly="true" />
         </a-form-item>
         <a-form-item key="SHA1" label="SHA1">
-          <a-input v-model:value="state.SHA1" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.SHA1"
-                @click="copyToClipboard(state.SHA1)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.SHA1" :readonly="true" />
         </a-form-item>
         <a-form-item key="SHA224" label="SHA224">
-          <a-input v-model:value="state.SHA224" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.SHA224"
-                @click="copyToClipboard(state.SHA224)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.SHA224" :readonly="true" />
         </a-form-item>
         <a-form-item key="SHA256" label="SHA256">
-          <a-input v-model:value="state.SHA256" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.SHA256"
-                @click="copyToClipboard(state.SHA256)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.SHA256" :readonly="true" />
         </a-form-item>
         <a-form-item key="SHA384" label="SHA384">
-          <a-input v-model:value="state.SHA384" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.SHA384"
-                @click="copyToClipboard(state.SHA384)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.SHA384" :readonly="true" />
         </a-form-item>
         <a-form-item key="SHA512" label="SHA512">
-          <a-input v-model:value="state.SHA512" readonly>
-            <template #suffix>
-              <CopyTwoTone
-                v-if="state.SHA512"
-                @click="copyToClipboard(state.SHA512)"
-              />
-            </template>
-          </a-input>
+          <input-with-copy v-model="state.SHA512" :readonly="true" />
         </a-form-item>
       </a-form>
     </div>
@@ -225,6 +158,7 @@ function clearHashResult() {
 @import url("/src/style/common.less");
 .main-container {
   height: 100%;
+  padding-right: 0.5rem;
 
   .textarea {
     margin-bottom: 20px;
