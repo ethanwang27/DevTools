@@ -1,5 +1,3 @@
-use std::process::id;
-
 #[allow(dead_code, unused_variables)]
 use super::administrative_division::*;
 use crate::utils::administrative_division::get_division_code;

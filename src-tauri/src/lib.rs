@@ -1,5 +1,11 @@
 mod error;
 mod utils;
+use std::path::PathBuf;
+use std::sync::Mutex;
+
+use lazy_static::lazy_static;
+
+use tauri::Manager;
 use utils::administrative_division::get_all_provinces;
 use utils::base64util::{base64_decode, base64_encode};
 use utils::hashes::hash_generate;
@@ -8,9 +14,20 @@ use utils::id_no::{get_id_no, parse_id_no};
 use utils::qr_code::get_qr_code;
 use utils::url_utils::{url_decode, url_encode};
 
+lazy_static! {
+    static ref RESOURCE_PATH: Mutex<PathBuf> = Mutex::new(PathBuf::default());
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .setup(|app| {
+            {
+                let mut path = RESOURCE_PATH.lock().unwrap();
+                *path = app.path().resource_dir().unwrap();
+            }
+            Ok(())
+        })
         .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_log::Builder::new()

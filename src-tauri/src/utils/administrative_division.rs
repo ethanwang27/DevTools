@@ -1,6 +1,6 @@
 use anyhow::Result;
 use cached::proc_macro::cached;
-use std::{clone::Clone, ops::Div};
+use std::clone::Clone;
 
 /// 行政区划编码
 #[derive(Debug, Clone, serde::Deserialize)]
@@ -101,7 +101,11 @@ impl DivisionInfo {
 /// 获取所有行政区划信息
 #[cached(result = true)]
 pub fn get_all_division_codes() -> Result<Vec<DivisionCode>, String> {
-    let csv_file = "resources/assets/administrative_division_code.csv";
+    use crate::RESOURCE_PATH;
+
+    let resource_path = RESOURCE_PATH.lock().unwrap();
+    let csv_file = resource_path.join("resources/assets/administrative_division_code.csv");
+    println!("csv file path: {:?}", csv_file);
     let mut reader = csv::ReaderBuilder::new()
         .has_headers(true)
         .from_path(csv_file)
@@ -210,7 +214,7 @@ pub fn get_division_code(
         .find(|item| item.name == province)
         .expect(format!("未找到{}", province).as_str());
     let mut result = DivisionInfo::new(
-        &province.code,
+        &province.name,
         city.unwrap_or_default(),
         district.unwrap_or_default(),
         "",

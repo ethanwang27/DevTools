@@ -54,7 +54,7 @@ const state = reactive<IState>({
   showSpinning: false,
 });
 
-const checkDivision = async (rule: Rule, value: string) => {
+const checkDivision = async (rule: Rule, value: string | null) => {
   if (!state.randomDivision && !value) {
     return Promise.reject(rule.message);
   } else {
@@ -67,35 +67,36 @@ const fromRules: Record<string, Rule[]> = {
   province: [
     {
       required: true,
-      trigger: "blur",
+      trigger: ["blur", "change"],
       message: "请选择省份",
-      validator: checkDivision,
+      validator: (rule) => checkDivision(rule, state.personInfo.province),
     },
   ],
   city: [
     {
       required: true,
-      trigger: "blur",
+      trigger: ["blur", "change"],
       message: "请选择市",
-      validator: checkDivision,
+      validator: (rule) => checkDivision(rule, state.personInfo.city),
     },
   ],
   district: [
     {
       required: true,
-      trigger: "blur",
+      trigger: ["blur", "change"],
       message: "请选择区县",
-      validator: checkDivision,
+      validator: (rule) => checkDivision(rule, state.personInfo.district),
     },
   ],
   birthday: [
     {
       required: true,
-      trigger: "change",
-      validator: async (_rule: Rule, value: string) => {
-        if (state.randomBirthDay === false && !value)
+      trigger: ["blur", "change"],
+      validator: async (_rule: Rule) => {
+        if (state.randomBirthDay === false && !state.personInfo.birthday) {
+          console.log("return reject");
           return Promise.reject("请选择出生日期");
-        else Promise.resolve();
+        } else return Promise.resolve();
       },
     },
   ],
@@ -205,7 +206,7 @@ onMounted(() => getProvinceInfo());
       :rules="fromRules"
       class="form-container"
     >
-      <a-form-item label="出生地" key="randomDivision">
+      <a-form-item label="出生地" name="randomDivision">
         <a-radio-group v-model:value="state.randomDivision">
           <a-radio-button :value="true">随机</a-radio-button>
           <a-radio-button :value="false">指定出生地</a-radio-button>
@@ -214,8 +215,8 @@ onMounted(() => getProvinceInfo());
       <a-row>
         <a-col span="6" />
         <a-col span="18">
-          <a-form-item label="" key="division">
-            <a-space>
+          <a-space>
+            <a-form-item label="" name="province">
               <a-select
                 v-model:value="state.personInfo.province"
                 style="width: 120px"
@@ -223,13 +224,28 @@ onMounted(() => getProvinceInfo());
                   state.provinceData.map((pro) => mapToSelectOption(pro))
                 "
                 :disabled="state.randomDivision"
+                @change="
+                  () => {
+                    state.personInfo.city = null;
+                    state.personInfo.district = null;
+                  }
+                "
               ></a-select>
+            </a-form-item>
+            <a-form-item label="" name="city">
               <a-select
                 v-model:value="state.personInfo.city"
                 style="width: 120px"
                 :options="cityData.map((city) => mapToSelectOption(city))"
                 :disabled="state.randomDivision"
+                @change="
+                  () => {
+                    state.personInfo.district = null;
+                  }
+                "
               ></a-select>
+            </a-form-item>
+            <a-form-item label="" name="district">
               <a-select
                 v-model:value="state.personInfo.district"
                 style="width: 120px"
@@ -238,33 +254,45 @@ onMounted(() => getProvinceInfo());
                 "
                 :disabled="state.randomDivision"
               ></a-select>
-            </a-space>
-          </a-form-item>
+            </a-form-item>
+          </a-space>
         </a-col>
       </a-row>
-      <a-form-item label="出生日期" key="randomBirthday">
+      <a-form-item label="出生日期" name="randomBirthday">
         <a-space>
           <a-radio-group v-model:value="state.randomBirthDay">
             <a-radio-button :value="true">随机</a-radio-button>
             <a-radio-button :value="false">指定日期</a-radio-button>
           </a-radio-group>
-          <a-date-picker
-            v-model:value="state.personInfo.birthday"
-            placeholder="请选择出生日期"
-            format="YYYY年MM月DD日"
-            :disabled="state.randomBirthDay"
-          />
+          <a-form-item name="birthday">
+            <a-date-picker
+              v-model:value="state.personInfo.birthday"
+              placeholder="请选择出生日期"
+              format="YYYY年MM月DD日"
+              :disabled="state.randomBirthDay"
+            />
+          </a-form-item>
         </a-space>
       </a-form-item>
-      <a-form-item label="性别" key="gender">
+      <a-form-item label="性别" name="gender">
         <a-radio-group v-model:value="state.personInfo.gender">
           <a-radio :value="null">随机</a-radio>
           <a-radio value="Male">男</a-radio>
           <a-radio value="Female">女</a-radio>
         </a-radio-group>
       </a-form-item>
-      <a-form-item label="生成数量" key="num">
-        <a-input-number v-model:value="state.num" :max="100" />
+      <a-form-item label="生成数量" name="num">
+        <a-input-number
+          v-model:value="state.num"
+          :max="100"
+          :min="1"
+          :defaultValue="1"
+          @change="
+            () => {
+              if (!state.num) state.num = 1;
+            }
+          "
+        />
       </a-form-item>
     </a-form>
     <div class="action">
@@ -297,7 +325,7 @@ onMounted(() => getProvinceInfo());
         :spinning="state.showSpinning"
         style="height: 100%; width: 100%"
       />
-      <a-list v-for="(item, index) in state.idNoList" :key="index">
+      <a-list v-for="(item, index) in state.idNoList" :name="index">
         <a-row>
           <a-col span="6" class="title">身份证号码：</a-col>
           <a-col span="18" class="content">{{ item.id_no }}</a-col>
